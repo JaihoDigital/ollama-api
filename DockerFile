@@ -3,15 +3,11 @@ FROM ollama/ollama:latest
 # Install curl
 RUN apt-get update && apt-get install -y curl
 
-# Set environment for proper binding and CORS
-ENV OLLAMA_HOST=0.0.0.0:11434
-ENV OLLAMA_ORIGINS=*
-
 # Clear entrypoint
 ENTRYPOINT []
 
 # Expose port  
 EXPOSE 11434
 
-# Start server and pull model
-CMD ["bash", "-c", "ollama serve & pid=$!; sleep 15; curl -f http://localhost:11434/api/tags && ollama pull gemma3:1b; wait $pid"]
+# Start server with proper configuration
+CMD ["bash", "-c", "export OLLAMA_HOST=0.0.0.0:11434 && export OLLAMA_ORIGINS='*' && ollama serve & pid=$!; sleep 20; echo 'Testing API...'; curl -f http://localhost:11434/api/tags || echo 'API not ready yet'; ollama pull gemma3:1b && echo 'Model ready!'; wait $pid"]
