@@ -1,0 +1,17 @@
+FROM ollama/ollama:latest
+
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl
+
+# Create app directory
+WORKDIR /app
+
+# Copy startup script
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Expose port
+EXPOSE 11434
+
+# Start Ollama service
+CMD ["/app/start.sh"]
