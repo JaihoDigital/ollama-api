@@ -1,18 +1,18 @@
 FROM ollama/ollama:latest
 
-# Install curl for health checks
+# Install curl
 RUN apt-get update && apt-get install -y curl
-
-# Create app directory
-WORKDIR /app
-
-# Copy startup script
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
 
 # Expose port
 EXPOSE 11434
 
-# Override entrypoint and run our script directly
-ENTRYPOINT []
-CMD ["/bin/bash", "/app/start.sh"]
+# Set environment variables to allow HF Spaces requests
+ENV OLLAMA_HOST=0.0.0.0:11434
+ENV OLLAMA_ORIGINS="http://localhost,https://localhost,http://127.0.0.1,https://127.0.0.1,https://*.hf.space,https://*.huggingface.co,https://huggingface.co"
+
+# Start ollama and pull models
+CMD ollama serve & \
+    sleep 25 && \
+    ollama pull gemma3:1b && \
+    echo "gemma3:1b model ready!" && \
+    wait
