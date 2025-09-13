@@ -13,5 +13,6 @@ RUN chmod +x /app/start.sh
 # Expose port
 EXPOSE 11434
 
-# Start Ollama service
-CMD ["/app/start.sh"]
+# Override entrypoint and run our script directly
+ENTRYPOINT []
+CMD ["/bin/bash", "/app/start.sh"]
